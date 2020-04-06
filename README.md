@@ -1,5 +1,6 @@
-# PCbox-for-rodent-behavior<BR>
+# PCbox-for-rodent-behavior
   A simple pradigm control box (board) for rodent behavior.<BR>
+  
  ![Top view of the board](PCbox.jpg)
   
   **Features**
