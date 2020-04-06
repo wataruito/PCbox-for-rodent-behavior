@@ -22,6 +22,8 @@
     [Recording system](https://open-ephys.org/acquisition-system/eux9baf6a5s8tid06hk1mw5aafjdz1), and
     [LED driver](https://open-ephys.org/cyclops-led-driver/cyclops-led-driver).
   
+    ![connection](connection.jpg)
+  
   **Caustion**<BR>
   - Currently, only support Sentech USB2 camera with trigger.
   - The resolution of sinusoidal analog signal is relatively low (< 1kHz). 
@@ -30,4 +32,4 @@
 
 
 
-  ![connection](connection.jpg)
+
