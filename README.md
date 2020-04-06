@@ -1,6 +1,6 @@
 # PCbox-for-rodent-behavior
   A simple pradigm control box (board) for rodent behavior.<BR><BR>
- ![Top view of the board](IMG_20200406_144417.jpg)
+ ![Top view of the board](PCbox.jpg)
   
   **Features**
   - Jupyter notebook interface to control Arduino inside of the box.
@@ -18,4 +18,4 @@
   Small light https://www.med-associates.com/product/housestimulus-light-with-diffuser-for-rat/
   Large light https://www.med-associates.com/product/cubicle-ceiling-mount-house-light/
   Shocker https://www.med-associates.com/product/standalone-aversive-stimulatorscrambler-115-v-ac-60-hz/
- 
+  ![connection](connection.jpg)
