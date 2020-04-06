@@ -1,6 +1,6 @@
 # PCbox-for-rodent-behavior
   A simple pradigm control box for rodent behavior.<BR><BR>
-  (IMG_20200406_144417.jpg)
+ ![Top view of the board](https://octodex.github.com/images/yaktocat.png) (IMG_20200406_144417.jpg)
   
   **Features**
   - Jupyter notebook interface to control Arduino inside of the box.
