@@ -7,8 +7,8 @@
   - Synchronize up to 3 cameras (signal level: 3.3V).
   - Auditory stimulus by a built-in soundboard using wav files.
   - TTL trigger for one shocker (Med Associate XXXX).
-  - Three 28V power supplies for fans and lamps.
-  - Digital IOs to trigger your recording system.
+  - Three 28V power supplies for fans and lights.
+  - Digital IOs to send triggers to your recording system.
   - Generate sinusoidal analog signal to control two external LED drivers.
   
   **Possible connections**<BR>
@@ -22,7 +22,11 @@
     [Recording system](https://open-ephys.org/acquisition-system/eux9baf6a5s8tid06hk1mw5aafjdz1), and
     [LED driver](https://open-ephys.org/cyclops-led-driver/cyclops-led-driver).
   
-
+  **Caustion**<BR>
+  - Currently, only support Sentech USB2 camera with trigger.
+  - The resolution of sinusoidal analog signal is relatively low (< 1kHz). 
+  
+    
 
 
 
