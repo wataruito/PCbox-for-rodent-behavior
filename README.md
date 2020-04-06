@@ -28,9 +28,9 @@
   **Caution**<BR>
   - Currently, only support Sentech USB2 camera with trigger.
   - The resolution of sinusoidal analog signal is relatively low (< 1kHz). 
-  
-    
 
+# Installation
 
-
-
+1. Assemble PCbox hardware
+2. Load software to Arduino
+3. Install Python environment
