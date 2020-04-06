@@ -1,6 +1,6 @@
 # PCbox-for-rodent-behavior
   A simple pradigm control box for rodent behavior.<BR><BR>
-  
+  (IMG_20200406_144417.jpg)
   
   **Features**
   - Jupyter notebook interface to control Arduino inside of the box.
@@ -11,7 +11,7 @@
   - Generate sinosoidal analog signal to control two external LED drivers.
   
   **Requirement**
-  - Fear conditioning chamber (Med Associate)
+  - Fear conditioning chamber (Med Associate)<BR>
       Large lamp, small lamp and fan for noise.
       Speaker.
   
