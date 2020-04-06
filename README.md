@@ -24,7 +24,7 @@
   
   ![connection](connection.jpg)
   
-  **Caustion**<BR>
+  **Caution**<BR>
   - Currently, only support Sentech USB2 camera with trigger.
   - The resolution of sinusoidal analog signal is relatively low (< 1kHz). 
   
