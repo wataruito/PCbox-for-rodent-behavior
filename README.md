@@ -1,7 +1,7 @@
 # PCbox-for-rodent-behavior
   A simple pradigm control box (board) for rodent behavior.<BR>
   
- ![Top view of the board](PCbox.jpg)
+ ![Top view of the board](images/PCbox.jpg)
   
   **Features**
   - Jupyter notebook interface to control Arduino inside the box.
@@ -23,7 +23,7 @@
     [Recording system](https://open-ephys.org/acquisition-system/eux9baf6a5s8tid06hk1mw5aafjdz1), and
     [LED driver](https://open-ephys.org/cyclops-led-driver/cyclops-led-driver).
   
-  ![connection](connection.jpg)
+  ![connection](images/connection.jpg)
   
   **Caution**<BR>
   - Currently, only support Sentech USB2 camera with trigger.
