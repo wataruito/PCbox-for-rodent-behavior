@@ -152,11 +152,12 @@ def acquire_images(previewName, camera, fps, savePath):
             os.mkdir(savePath)
             
         prefixFileName = os.path.split(savePath)[1]
-        # outputFile = os.path.join(savePath,prefixFileName + "_" + previewName) + '.avi'
         outputFile = os.path.join(savePath,prefixFileName + "_" + previewName) + '.mp4'
+        out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('H','2','6','4'), fps, (width,height), True)
+        
+        # outputFile = os.path.join(savePath,prefixFileName + "_" + previewName) + '.avi'
         # path = r'Z:\wataru\WD_Passport\Alexei\synchrony\2019_9_12\122419'
         # out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('M','J','P','G'), fps, (width,height))
-        out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('H','2','6','4'), fps, (width,height))
         # out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('a','v','c','1'), fps, (width,height))    
     ###################################    
     # 9) Transfer images from camera until user hits ESC
