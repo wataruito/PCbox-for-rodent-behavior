@@ -25,6 +25,7 @@ from ctypes import *
 # # free = ctypes.cdll.msvcrt.free
 import numpy as np
 import cv2
+import skvideo.io
 from pysentech import SentechDLL
 import threading
 
@@ -152,13 +153,25 @@ def acquire_images(previewName, camera, fps, savePath):
             os.mkdir(savePath)
             
         prefixFileName = os.path.split(savePath)[1]
-        outputFile = os.path.join(savePath,prefixFileName + "_" + previewName) + '.mp4'
-        out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('H','2','6','4'), fps, (width,height), True)
         
         # outputFile = os.path.join(savePath,prefixFileName + "_" + previewName) + '.avi'
-        # path = r'Z:\wataru\WD_Passport\Alexei\synchrony\2019_9_12\122419'
+        outputFile = os.path.join(savePath,prefixFileName + "_" + previewName) + '.mp4'
+
         # out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('M','J','P','G'), fps, (width,height))
-        # out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('a','v','c','1'), fps, (width,height))    
+        # out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('H','2','6','4'), fps, (width,height))
+        # out = cv2.VideoWriter(outputFile, cv2.VideoWriter_fourcc('A','V','C','1'), fps, (width,height))    
+        # out = cv2.VideoWriter(outputFile, 0x31637661, fps, (width,height))
+        out = skvideo.io.FFmpegWriter(outputFile, outputdict={
+            '-r': str(fps),
+            '-vcodec': 'libx264',  #use the h.264 codec
+            #'-crf': '0',           #set the constant rate factor to 0, which is lossless
+            #'-preset':'veryslow'   #the slower the better compression, in princple, try 
+                                   #other options see https://trac.ffmpeg.org/wiki/Encode/H.264
+        }, inputdict={
+            '-r': str(fps)
+        })
+
+        
     ###################################    
     # 9) Transfer images from camera until user hits ESC
     ###################################
@@ -182,7 +195,7 @@ def acquire_images(previewName, camera, fps, savePath):
             print("Failed to transfer image from camera.", end =" ") 
             if startMovie == 1:
                 frameTimeout += 1
-                if frameTimeout > 2:
+                if frameTimeout > 1:
                     break
         else:
             startMovie = 1
@@ -204,8 +217,9 @@ def acquire_images(previewName, camera, fps, savePath):
 
             # Write the frame into the file 'output.avi'
             if savePath != '':
-                out.write(npimg)
-
+                # out.write(npimg)
+                # out.writeFrame(npimg[:,:,::-1])  #write the frame as RGB not BGR
+                out.writeFrame(npimg)
             # Show in display window
             cv2.imshow(previewName, npimg)
 
@@ -219,7 +233,8 @@ def acquire_images(previewName, camera, fps, savePath):
     ###################################
     cv2.destroyWindow(previewName)
     if savePath != '':
-        out.release()
+        # out.release()
+        out.close()
 
     # Free buffer
     del imgdata
