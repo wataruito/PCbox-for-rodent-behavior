@@ -37,7 +37,7 @@ print("DLL loaded!")
 
 ###################################
 # Entry
-def live_movie(cameraNum, fps, savePath):
+def live_movie(cameraNum, fps, savePath, gain_set, dgain_set):
     ###################################
     # 1) Open a camera
     ###################################
@@ -49,31 +49,33 @@ def live_movie(cameraNum, fps, savePath):
     previewName = np.array(["camera_1","camera_2","camera_3"])
     
     if cameraNum > 0:
-        thread1 = camThread(previewName[0], hCamera[0], fps, savePath)
+        thread1 = camThread(previewName[0], hCamera[0], fps, savePath, gain_set, dgain_set)
         thread1.start()
     if cameraNum > 1:
-        thread2 = camThread(previewName[1], hCamera[1], fps, savePath)
+        thread2 = camThread(previewName[1], hCamera[1], fps, savePath, gain_set, dgain_set)
         thread2.start()
     if cameraNum > 2:
-        thread3 = camThread(previewName[2], hCamera[2], fps, savePath)
+        thread3 = camThread(previewName[2], hCamera[2], fps, savePath, gain_set, dgain_set)
         thread3.start()        
     
 ###################################
 # Thread definition
 class camThread(threading.Thread):
-    def __init__(self, previewName, camID, fps, savePath):
+    def __init__(self, previewName, camID, fps, savePath, gain_set, dgain_set):
         threading.Thread.__init__(self)
         self.previewName = previewName
         self.camID = camID
         self.fps = fps
-        self.savePath = savePath  
+        self.savePath = savePath
+        self.gain_set = gain_set
+        self.dgain_set = dgain_set
     def run(self):
         print ("Starting " + self.previewName)
-        acquire_images(self.previewName, self.camID, self.fps, self.savePath )
+        acquire_images(self.previewName, self.camID, self.fps, self.savePath, self.gain_set, self.dgain_set )
 
 ###################################
 # Thread detailes    
-def acquire_images(previewName, camera, fps, savePath):
+def acquire_images(previewName, camera, fps, savePath, gain_set, dgain_set):
   
     ###################################
     # 2) Get image shape
@@ -119,7 +121,7 @@ def acquire_images(previewName, camera, fps, savePath):
     bpi = width * height
 
     ###################################
-    # 6) Trigger setting
+    # 6) Set Trigger
     ###################################
     dwTriggerMode = c_ulong(dll.STCAM_TRIGGER_MODE_TYPE_TRIGGER)
     dwTriggerMode = c_ulong(dll.STCAM_TRIGGER_MODE_TYPE_TRIGGER + dll.STCAM_TRIGGER_MODE_EXPTIME_PULSE_WIDTH
@@ -127,7 +129,7 @@ def acquire_images(previewName, camera, fps, savePath):
     dll.StTrg_SetTriggerMode(camera,dwTriggerMode)
 
     ###################################
-    # 7) IO pin setting
+    # 7) Set IO pin
     ###################################
     bytePinNo = c_byte(0)
     dwMode = c_ulong(dll.STCAM_IN_PIN_MODE_TRIGGER_INPUT)
@@ -136,9 +138,38 @@ def acquire_images(previewName, camera, fps, savePath):
     dwBufferCount = c_ulong(100)
     if not dll.StTrg_SetRawSnapShotBufferCount(camera,dwBufferCount):
         print("Couldn't set snap shot buffer.")
-       
+    
     ###################################
-    # 8) Preparing image acquisition
+    # 8) Set gain, digital gain and Get
+    ###################################
+    # Set
+    wGainSet = c_ushort(gain_set)
+    if not dll.StTrg_SetGain(camera, wGainSet):
+        print("Couldn't set SetGain.")
+
+    wDigitalGainSet = c_ushort(dgain_set)
+    if not dll.StTrg_SetDigitalGain(camera, wDigitalGainSet):
+        print("Couldn't set SetDigitalGain.")
+            
+    # Get
+    wGain = c_ushort()  # WORD  wScanMode;
+    
+    if not dll.StTrg_GetGain(camera,byref(wGain)):
+        print("Couldn't get GetGain.")
+    
+    gain = wGain.value
+    print("Gain: {}".format(gain))
+    
+    wDigitalGain = c_ushort()  # WORD  wScanMode;
+    
+    if not dll.StTrg_GetDigitalGain(camera,byref(wDigitalGain)):
+        print("Couldn't get GetGain.")
+    
+    dgain = wDigitalGain.value
+    print("DigitalGain: {}".format(dgain))
+
+    ###################################
+    # 9) Preparing image acquisition
     ###################################
     # Allocate memory for image
     imgdata = cast(create_string_buffer(bpi), POINTER(c_byte))
@@ -173,7 +204,7 @@ def acquire_images(previewName, camera, fps, savePath):
 
         
     ###################################    
-    # 9) Transfer images from camera until user hits ESC
+    # 10) Transfer images from camera until user hits ESC
     ###################################
     # Transfer Start
     if not dll.StTrg_StartTransfer(camera):
@@ -198,11 +229,13 @@ def acquire_images(previewName, camera, fps, savePath):
                 if frameTimeout > 1:
                     break
         else:
-            startMovie = 1
+            if startMovie == 0:
+                startMovie = 1
+                startMovieFrame = cframeno.value
             
-            if  frameNum != cframeno.value - 1:
+            if  frameNum != cframeno.value - 1 - startMovieFrame:
                 print("Dropped a frame {}".format(cframeno.value))
-            frameNum = cframeno.value
+            frameNum = cframeno.value - startMovieFrame
 
             # Make image array
             array = (c_ubyte * int(height*bpi) *
@@ -211,6 +244,9 @@ def acquire_images(previewName, camera, fps, savePath):
             # Convert image array to numpy so we can display it easily
             npimg = np.ndarray(buffer=array, dtype=np.uint8, shape=(height, width))
 
+            # Flip or rotate image
+            npimg = cv2.rotate(npimg,cv2.ROTATE_180)
+            
             # put the current state in the image
             im_text = "frame number: " + str(frameNum)
             add_text(npimg, im_text, 20, 0.5)
